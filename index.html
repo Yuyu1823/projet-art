@@ -344,27 +344,57 @@
             color: #555;
         }
 
-        /* Objets du quotidien */
+
+        /* Objets du quotidien avec images */
         .objects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            padding: 3rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .object-card {
             background: white;
-            padding: 2rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-left: 4px solid var(--emancipation-gold);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .object-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .object-image {
+            width: 100%;
+            height: 250px;
+            background: #e8e4dc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .object-image::after {
+            content: 'Photo de l'objet';
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 0.5rem 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #666;
+        }
+
+        .object-content {
+            padding: 2rem;
         }
 
         .object-card h4 {
@@ -386,6 +416,7 @@
             line-height: 1.6;
             color: #555;
         }
+
 
         /* Footer */
         footer {
@@ -434,6 +465,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -612,29 +644,49 @@
         <p>Les artefacts matériels qui témoignent la vie des citoyens de l'époque.</p>
     </section>
 
-    <div class="objects-grid">
+        <div class="objects-grid">
         <article class="object-card">
-            <h4>Vintage Victoreen CD V-715 « Geiger Counter »</h4>
-            <p class="era">USA — 1960s</p>
-            <p>Detecteur à radiation de la compagnie Victoreen Instrument: avec la crise de Cuba, l’Office des défenses civil des États-Unis était submergé par les demandes de détecteurs à radiation par les citoyens.</p>
+            <div class="object-image" style="background: linear-gradient(135deg, #d4ccc0 0%, #c4b8a8 100%);">
+                <span style="color: #555; z-index: 2;">Geiger Counter</span>
+            </div>
+            <div class="object-content">
+                <h4>Vintage Victoreen CD V-715 « Geiger Counter »</h4>
+                <p class="era">USA — 1960s</p>
+                <p>Detecteur à radiation de la compagnie Victoreen Instrument: avec la crise de Cuba, l'Office des défenses civil des États-Unis était submergé par les demandes de détecteurs à radiation par les citoyens.</p>
+            </div>
         </article>
 
         <article class="object-card">
-            <h4>OBJET EMILE « NOM »</h4>
-            <p class="era">ENDROIT — ANNÉES</p>
-            <p>EXTRAIT TEXTE EMILE</p>
+            <div class="object-image" style="background: linear-gradient(135deg, #e8e4dc 0%, #d8d4cc 100%);">
+                <span style="color: #555; z-index: 2;">Objet Emile</span>
+            </div>
+            <div class="object-content">
+                <h4>OBJET EMILE « NOM »</h4>
+                <p class="era">ENDROIT — ANNÉES</p>
+                <p>EXTRAIT TEXTE EMILE</p>
+            </div>
         </article>
 
         <article class="object-card">
-            <h4>OBJET SARA « NOM »</h4>
-            <p class="era">ENDROIT — ANNÉES</p>
-            <p>EXTRAIT TEXTE SARA</p>
+            <div class="object-image" style="background: linear-gradient(135deg, #e0dcd4 0%, #d0ccc4 100%);">
+                <span style="color: #555; z-index: 2;">Objet Sara</span>
+            </div>
+            <div class="object-content">
+                <h4>OBJET SARA « NOM »</h4>
+                <p class="era">ENDROIT — ANNÉES</p>
+                <p>EXTRAIT TEXTE SARA</p>
+            </div>
         </article>
 
         <article class="object-card">
-            <h4>OBJET SAMY « NOM »</h4>
-            <p class="era">ENDROIT — ANNÉES</p>
-            <p>EXTRAIT TEXTE SAMY</p>
+            <div class="object-image" style="background: linear-gradient(135deg, #d8d4cc 0%, #c8c4bc 100%);">
+                <span style="color: #555; z-index: 2;">Objet Samy</span>
+            </div>
+            <div class="object-content">
+                <h4>OBJET SAMY « NOM »</h4>
+                <p class="era">ENDROIT — ANNÉES</p>
+                <p>EXTRAIT TEXTE SAMY</p>
+            </div>
         </article>
     </div>
 
