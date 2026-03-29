@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moscou / New York : Aller-retour</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;600&display=swap');
+
+        :root {
+            --propagande-red: #8B0000;
+            --propagande-dark: #2C0A0A;
+            --emancipation-gold: #D4AF37;
+            --emancipation-blue: #1E3A5F;
+            --paper: #F5F1E8;
+            --text: #2C2416;
+            --shadow: rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #e8e0d5 0%, #d4ccc0 100%);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Page de couverture */
+        .cover {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: 
+                linear-gradient(45deg, rgba(139,0,0,0.1) 0%, rgba(30,58,95,0.1) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23f5f1e8" width="100" height="100"/><path d="M0 50 Q25 30 50 50 T100 50" stroke="%23d4ccc0" fill="none" stroke-width="0.5"/></svg>');
+            position: relative;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 3px double var(--propagande-red);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .cover-badge {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--propagande-red);
+            margin-bottom: 2rem;
+            padding: 0.5rem 2rem;
+            border-top: 1px solid var(--propagande-red);
+            border-bottom: 1px solid var(--propagande-red);
+        }
+
+        .cover h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cover h1 .slash {
+            color: var(--propagande-red);
+            font-weight: 300;
+        }
+
+        .cover-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            font-style: italic;
+            max-width: 600px;
+            line-height: 1.6;
+            color: var(--emancipation-blue);
+            position: relative;
+            padding: 0 2rem;
+        }
+
+        .cover-subtitle::before,
+        .cover-subtitle::after {
+            content: '❧';
+            position: absolute;
+            font-size: 1.5rem;
+            color: var(--emancipation-gold);
+        }
+
+        .cover-subtitle::before { left: 0; top: -0.5rem; }
+        .cover-subtitle::after { right: 0; bottom: -0.5rem; }
+
+        .cover-year {
+            margin-top: 3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #666;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            animation: bounce 2s infinite;
+            font-size: 2rem;
+            color: var(--propagande-red);
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        nav.visible {
+            transform: translateY(0);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--propagande-red);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        .section-intro {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .section-intro h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-intro p {
+            max-width: 700px;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .propagande-section {
+            background: linear-gradient(to bottom, var(--paper) 0%, #f0e6d8 100%);
+        }
+
+        .propagande-section h2 {
+            color: var(--propagande-red);
+        }
+
+        .emancipation-section {
+            background: linear-gradient(to bottom, #f0f4f8 0%, var(--paper) 100%);
+        }
+
+        .emancipation-section h2 {
+            color: var(--emancipation-blue);
+        }
+
+        /* Book pages */
+        .book-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            background: white;
+            margin: 3rem 0;
+            padding: 4rem;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(0,0,0,0.05);
+            position: relative;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .page.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            bottom: 10%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #ddd, transparent);
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .page-left .page-number { left: 4rem; }
+        .page-right .page-number { right: 4rem; }
+
+        .page-image {
+            width: 100%;
+            height: 400px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #666;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .page-image::after {
+            content: 'Image de l\'œuvre';
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .page-content h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .page-content .artist {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .page-content .year {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            border: 1px solid currentColor;
+        }
+
+        .propagande-section .page-content .year {
+            color: var(--propagande-red);
+            border-color: var(--propagande-red);
+        }
+
+        .emancipation-section .page-content .year {
+            color: var(--emancipation-blue);
+            border-color: var(--emancipation-blue);
+        }
+
+        .page-content p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .page-content .context {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            font-size: 1rem;
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Objets du quotidien */
+        .objects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .object-card {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--emancipation-gold);
+        }
+
+        .object-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .object-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .object-card .era {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--propagande-red);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .object-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text);
+            color: var(--paper);
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+                gap: 2rem;
+            }
+
+            .page::before {
+                display: none;
+            }
+
+            .page-image {
+                height: 250px;
+            }
+
+            nav ul {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Page de couverture -->
+    <section class="cover">
+        <div class="cover-badge">Exposition Virtuelle</div>
+        <h1>Moscou <span class="slash">/</span> New York<br>Aller-retour</h1>
+        <p class="cover-subtitle">La place de la Femme entre Rideau de fer et le Rêve américain</p>
+        <div class="cover-year">1945 — 1991</div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <ul>
+            <li><a href="#propagande">Propagande</a></li>
+            <li><a href="#emancipation">Émancipation</a></li>
+            <li><a href="#objets">Objets du quotidien</a></li>
+        </ul>
+    </nav>
+
+    <!-- Section Propagande -->
+    <section id="propagande" class="section-intro propagande-section">
+        <h2>I. Propagande</h2>
+        <p>Les représentations idéalisées de la femme soviétique et américaine à travers les affiches officielles, véhiculant les valeurs de chaque bloc idéologique.</p>
+    </section>
+
+    <div class="book-container">
+        <!-- Œuvre 1 Propagande -->
+        <article class="page page-left">
+            <div class="page-image" style="background: linear-gradient(135deg, #8B0000 0%, #4a0404 100%);">
+                <span style="color: white; z-index: 2;">Affiche soviétique</span>
+            </div>
+            <div class="page-content">
+                <span class="year">1943</span>
+                <h3>« La Grande Guerre patriotique »</h3>
+                <p class="artist">Iraïda Fomina</p>
+                <p>Affiche de propagande soviétique représentant une ouvrière tenant un fusil et des outils, symbolisant le double rôle de la femme dans l'effort de guerre. La figure féminine, déterminée et musclée, incarne la « nouvelle femme soviétique » capable de défendre la patrie tout en maintenant la production industrielle.</p>
+                <div class="context">
+                    Contexte : Pendant la Seconde Guerre mondiale, 800 000 femmes soviétiques servent dans l'armée régulière, bouleversant les représentations traditionnelles.
+                </div>
+            </div>
+            <span class="page-number">04</span>
+        </article>
+
+        <!-- Œuvre 2 Propagande -->
+        <article class="page page-right">
+            <div class="page-content">
+                <span class="year">1952</span>
+                <h3>« Rosie the Riveter »</h3>
+                <p class="artist">J. Howard Miller</p>
+                <p>L'icône américaine par excellence : une ouvrière en bleu de travail montrant son biceps sous le slogan « We Can Do It! ». Cette image, bien que créée pour Westinghouse Electric, deviendra le symbole de la participation féminine à l'effort de guerre et préfigure le mouvement féministe des années 60.</p>
+                <div class="context">
+                    Contexte : 6 millions de femmes américaines entrent dans la force de travail industrielle entre 1940 et 1945, modifiant durablement la démographie économique.
+                </div>
+            </div>
+            <div class="page-image" style="background: linear-gradient(135deg, #1E3A5F 0%, #0f1f33 100%);">
+                <span style="color: white; z-index: 2;">Poster américain</span>
+            </div>
+            <span class="page-number">05</span>
+        </article>
+
+        <!-- Œuvre 3 Propagande -->
+        <article class="page page-left">
+            <div class="page-image" style="background: linear-gradient(45deg, #c41e3a 0%, #8B0000 100%);">
+                <span style="color: white; z-index: 2;">Affiche de l'URSS</span>
+            </div>
+            <div class="page-content">
+                <span class="year">1962</span>
+                <h3>« Cosmonaute Valentina »</h3>
+                <p class="artist">Anonyme</p>
+                <p>Affiche célébrant Valentina Terechkova, première femme dans l'espace. Elle apparaît en combinaison spatiale, souriante, avec la Terre en arrière-plan. La propagande soviétique utilise cette prouesse technologique pour démontrer la supériorité du système soviétique dans l'égalité des sexes.</p>
+                <div class="context">
+                    Contexte : Le 16 juin 1963, Terechkova orbite pendant 71 heures, exploit médiatisé comme preuve de l'avancement socialiste.
+                </div>
+            </div>
+            <span class="page-number">06</span>
+        </article>
+
+        <!-- Œuvre 4 Propagande -->
+        <article class="page page-right">
+            <div class="page-content">
+                <span class="year">1957</span>
+                <h3>« The Kitchen Debate »</h3>
+                <p class="artist">Photographie officielle</p>
+                <p>Image de l'exposition américaine à Moscou où Richard Nixon présente une cuisine moderne à Nikita Khrouchtchev. Les femmes américaines sont représentées comme des consommatrices heureuses, symboles de l'abondance capitaliste, contrastant avec l'image de la travailleuse soviétique.</p>
+                <div class="context">
+                    Contexte : La « guerre froide domestique » oppose deux modèles : la ménagère américaine équipée contre l'ouvrière soviétique émancipée.
+                </div>
+            </div>
+            <div class="page-image" style="background: linear-gradient(45deg, #f5f5dc 0%, #e0d5c0 100%);">
+                <span style="color: #333; z-index: 2;">Photo historique</span>
+            </div>
+            <span class="page-number">07</span>
+        </article>
+    </div>
+
+    <!-- Section Émancipation -->
+    <section id="emancipation" class="section-intro emancipation-section">
+        <h2>II. Émancipation</h2>
+        <p>Les voix féminines qui ont défié les conventions, questionné les deux systèmes et ouvert la voie à de nouvelles libertés.</p>
+    </section>
+
+    <div class="book-container">
+        <!-- Œuvre 1 Émancipation -->
+        <article class="page page-left">
+            <div class="page-image" style="background: linear-gradient(135deg, #2c3e50 0%, #1E3A5F 100%);">
+                <span style="color: white; z-index: 2;">Couverture de livre</span>
+            </div>
+            <div class="page-content">
+                <span class="year">1963</span>
+                <h3>« La Femme mystifiée »</h3>
+                <p class="artist">Betty Friedan</p>
+                <p>Ce livre fondateur du féminisme américain moderne dénonce « le problème sans nom » : l'insatisfaction des femmes au foyer malgré le confort matériel. Friedan critique la réduction des femmes à leur rôle domestique, en pleine Guerre froide où l'Amérique promeut la famille nucléaire comme rempart contre le communisme.</p>
+                <div class="context">
+                    Contexte : Vendu à 3 millions d'exemplaires, il lance la « deuxième vague » féministe aux États-Unis.
+                </div>
+            </div>
+            <span class="page-number">12</span>
+        </article>
+
+        <!-- Œuvre 2 Émancipation -->
+        <article class="page page-right">
+            <div class="page-content">
+                <span class="year">1985</span>
+                <h3>« Le Temps du second sexe »</h3>
+                <p class="artist">Simone de Beauvoir</p>
+                <p>Bien que publié initialement en 1949, l'influence de Beauvoir traverse la Guerre froide. Ses entretiens télévisés et ses interventions politiques continuent d'inspirer les mouvements féministes des deux côtés du Rideau de fer, posant la question de l'authenticité de l'émancipation proclamée par les régimes.</p>
+                <div class="context">
+                    Contexte : En 1972, Beauvoir déclare : « On ne naît pas femme, on le devient », devenant le mantra des mouvements de libération.
+                </div>
+            </div>
+            <div class="page-image" style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);">
+                <span style="color: white; z-index: 2;">Portrait</span>
+            </div>
+            <span class="page-number">13</span>
+        </article>
+
+        <!-- Œuvre 3 Émancipation -->
+        <article class="page page-left">
+            <div class="page-image" style="background: linear-gradient(45deg, #e74c3c 0%, #c0392b 100%);">
+                <span style="color: white; z-index: 2;">Affiche de film</span>
+            </div>
+            <div class="page-content">
+                <span class="year">1979</span>
+                <h3>« Moscow Does Not Believe in Tears »</h3>
+                <p class="artist">Vladimir Menchov</p>
+                <p>Film soviétique oscarisé suivant trois jeunes femmes de province à Moscou sur vingt ans. Katia, l'héroïne, devient maire tout élevant seule sa fille. Le film montre les contradictions de l'émancipation soviétique : droits égaux sur le papier, double charge réelle, mais aussi capacité de résilience féminine.</p>
+                <div class="context">
+                    Contexte : Oscar du meilleur film étranger en 1981, il est le seul film soviétique à remporter cette récompense pendant la Guerre froide.
+                </div>
+            </div>
+            <span class="page-number">14</span>
+        </article>
+
+        <!-- Œuvre 4 Émancipation -->
+        <article class="page page-right">
+            <div class="page-content">
+                <span class="year">1971</span>
+                <h3>« Our Bodies, Ourselves »</h3>
+                <p class="artist">Boston Women's Health Book Collective</p>
+                <p>Manuel de santé féminine révolutionnaire créé par un collectif féministe. Ce livre, distribué clandestinement en URSS via samizdat, offre aux femmes une connaissance médicale autonome, hors du contrôle patriarcal et étatique. Symbole du pouvoir de l'information face aux systèmes autoritaires.</p>
+                <div class="context">
+                    Contexte : Traduit en 16 langues, il circule dans les dissidences des deux blocs, devenant outil de libération corporelle.
+                </div>
+            </div>
+            <div class="page-image" style="background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);">
+                <span style="color: white; z-index: 2;">Livre médical</span>
+            </div>
+            <span class="page-number">15</span>
+        </article>
+    </div>
+
+    <!-- Section Objets du quotidien -->
+    <section id="objets" class="section-intro" style="background: linear-gradient(to bottom, var(--paper) 0%, #e8e0d5 100%);">
+        <h2 style="color: var(--text);">III. Objets du quotidien</h2>
+        <p>Les artefacts matériels qui témoignent silencieusement des vies vécues entre idéologie et intimité.</p>
+    </section>
+
+    <div class="objects-grid">
+        <article class="object-card">
+            <h4>Le Moulinex « Ovatio »</h4>
+            <p class="era">France / USA — 1960s</p>
+            <p>Robot ménager importé en URSS via le marché noir. Symbole de la « kitchen politics » : l'Occident vendait l'électroménager comme libération, l'Est le voyait comme outil de soumission bourgeoise. Pourtant, les ménagères soviétiques le convoitaient ardemment.</p>
+        </article>
+
+        <article class="object-card">
+            <h4>Le Foulard de soie « Dior »</h4>
+            <p class="era">Paris — 1957</p>
+            <p>Accessoire de contrebande dans les salons moscovites. Le New Look de Dior, avec sa taille cintrée et ses jupes longues, contrastait avec la mode utilitaire soviétique. Porter ce foulard était un acte politique subtil de distinction culturelle.</p>
+        </article>
+
+        <article class="object-card">
+            <h4>La Pilule contraceptive</h4>
+            <p class="era">USA — 1960</p>
+            <p>Autorisée aux USA en 1960, interdite en URSS jusqu'en 1990. Cet objet révèle la différence fondamentale : l'Ouest voyait la libération sexuelle comme progrès, l'Est craignait la baisse de natalité. Contrôler le corps des femmes, mais différemment.</p>
+        </article>
+
+        <article class="object-card">
+            <h4>Le Badge « Travailleuse émérite »</h4>
+            <p class="era">URSS — 1950s-1980s</p>
+            <p>Décoration soviétique attribuée aux ouvrières dépassant leurs quotas. Cet objet métallique, porté avec fierté sur la blouse de travail, incarnait la valorisation socialiste du travail féminin productif, opposée à la valorisation capitaliste de la consommation.</p>
+        </article>
+    </div>
+
+    <footer>
+        <p>Moscou / New York : Aller-retour — 2026</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.6;">Une exploration des représentations féminines pendant la Guerre froide</p>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                navbar.classList.add('visible');
+            } else {
+                navbar.classList.remove('visible');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Intersection Observer for page animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.page').forEach(page => {
+            observer.observe(page);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // Cover scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            document.getElementById('propagande').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+</html>
