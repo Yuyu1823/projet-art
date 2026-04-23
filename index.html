@@ -29,6 +29,39 @@
             color: var(--text);
             overflow-x: hidden;
         }
+                /* Page d'accueil - Image verticale pleine hauteur */
+        .front-page {
+            height: 100vh;
+            width: 100%;
+            background-color: #2C0A0A; /* ← Couleur des bandes gauche/droite */
+            background-image: url('image/Histoire_de_lart.png'); /* ← Ton image */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 3rem;
+            position: relative;
+        }
+
+        .front-scroll {
+            font-family: 'Montserrat', sans-serif;
+            color: #F5F1E8;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            animation: bounce 2s infinite;
+            z-index: 2;
+        }
+
+        .front-scroll span {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
 
         /* Page de couverture */
         .cover {
@@ -286,15 +319,6 @@
             border: 1px solid #ddd;
         }
 
-        .page-image::after {
-            content: 'Image de l\'œuvre';
-            position: absolute;
-            background: rgba(255,255,255,0.9);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
         .page-content h3 {
             font-size: 2rem;
             margin-bottom: 0.5rem;
@@ -469,6 +493,13 @@
 </head>
 <body>
 
+    <!-- Page d'accueil / Image verticale -->
+    <section class="front-page">
+        <div class="front-scroll" onclick="document.querySelector('.cover').scrollIntoView({behavior: 'smooth'})">
+            <span>Entrer</span>
+            ↓
+        </div>
+    </section>
     <!-- Page de couverture -->
     <section class="cover">
         <div class="cover-badge">Projet d'exposition</div>
